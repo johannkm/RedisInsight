@@ -13,13 +13,27 @@ const DEFAULT_SORTING: KeySortOption = {
   order: SortOrder.ASC,
 }
 
+const normalizeSorting = (sorting: KeySortOption | string | undefined): KeySortOption => {
+  if (!sorting) {
+    return DEFAULT_SORTING
+  }
+  if (typeof sorting === 'string') {
+    return {
+      field: KeySortField.Name,
+      order: sorting as SortOrder,
+    }
+  }
+  return sorting
+}
+
 export const constructKeysToTree = (props: Props): any[] => {
   const {
     items: keys,
     delimiterPattern = ':',
     delimiters = [],
-    sorting = DEFAULT_SORTING,
+    sorting: sortingProp,
   } = props
+  const sorting = normalizeSorting(sortingProp)
   const keysSymbol = `keys${delimiterPattern}keys`
   const tree: any = {}
 
