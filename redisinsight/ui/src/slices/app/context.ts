@@ -14,7 +14,7 @@ import {
   DEFAULT_TREE_SORTING,
   KeyTypes,
   Pages,
-  SortOrder,
+  KeySortOption,
   BrowserColumns,
   DEFAULT_SHOWN_COLUMNS,
 } from 'uiSrc/constants'
@@ -198,7 +198,7 @@ const appContextSlice = createSlice({
         payload,
       )
     },
-    setBrowserTreeSort: (state, { payload }: PayloadAction<SortOrder>) => {
+    setBrowserTreeSort: (state, { payload }: PayloadAction<KeySortOption>) => {
       state.dbConfig.treeViewSort = payload
       setDBConfigStorageField(
         state.contextInstanceId,

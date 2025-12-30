@@ -1,11 +1,14 @@
 import { EuiComboBoxOptionOption } from '@elastic/eui'
-import { KeyValueFormat, SortOrder } from './keys'
+import { KeySortField, KeySortOption, KeyValueFormat, SortOrder } from './keys'
 
 export const DEFAULT_DELIMITER: EuiComboBoxOptionOption = {
   label: ':',
   value: ':',
 }
-export const DEFAULT_TREE_SORTING = SortOrder.ASC
+export const DEFAULT_TREE_SORTING: KeySortOption = {
+  field: KeySortField.Name,
+  order: SortOrder.ASC,
+}
 export const DEFAULT_SHOW_HIDDEN_RECOMMENDATIONS = false
 
 export const TEXT_UNPRINTABLE_CHARACTERS = {

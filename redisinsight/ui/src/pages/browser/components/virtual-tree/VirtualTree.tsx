@@ -16,7 +16,7 @@ import {
   DEFAULT_TREE_SORTING,
   KeyTypes,
   ModulesKeyTypes,
-  SortOrder,
+  KeySortOption,
 } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
@@ -36,7 +36,7 @@ export interface Props {
   loadingIcon?: string
   loading: boolean
   deleting: boolean
-  sorting: Maybe<SortOrder>
+  sorting: Maybe<KeySortOption>
   commonFilterType: Nullable<KeyTypes>
   statusSelected: Nullable<string>
   statusOpen: OpenedNodes

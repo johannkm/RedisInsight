@@ -1,11 +1,16 @@
-import { SortOrder } from 'uiSrc/constants'
+import { KeySortField, KeySortOption, SortOrder } from 'uiSrc/constants'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 
 interface Props {
   items: IKeyPropTypes[]
   delimiterPattern?: string
   delimiters?: string[]
-  sorting?: SortOrder
+  sorting?: KeySortOption
+}
+
+const DEFAULT_SORTING: KeySortOption = {
+  field: KeySortField.Name,
+  order: SortOrder.ASC,
 }
 
 export const constructKeysToTree = (props: Props): any[] => {
@@ -13,7 +18,7 @@ export const constructKeysToTree = (props: Props): any[] => {
     items: keys,
     delimiterPattern = ':',
     delimiters = [],
-    sorting = 'ASC',
+    sorting = DEFAULT_SORTING,
   } = props
   const keysSymbol = `keys${delimiterPattern}keys`
   const tree: any = {}
@@ -55,9 +60,11 @@ export const constructKeysToTree = (props: Props): any[] => {
   }
 
   // Folders should be always before leaves
-  const sortKeysAndFolder = (nodes: string[]) => {
+  const sortKeysAndFolder = (nodes: string[], treeLevel: any) => {
+    const { field, order } = sorting
+
     nodes.sort((a, b) => {
-      // Custom sorting for items ending with "keys:keys"
+      // Custom sorting for items ending with "keys:keys" - folders before leaves
       if (a.endsWith(keysSymbol) && !b.endsWith(keysSymbol)) {
         return 1
       }
@@ -65,15 +72,33 @@ export const constructKeysToTree = (props: Props): any[] => {
         return -1
       }
 
-      // Regular sorting
-      if (sorting === 'ASC') {
-        return a.localeCompare(b, 'en')
-      }
-      if (sorting === 'DESC') {
+      // For non-leaf nodes (folders), always sort by name
+      if (!a.endsWith(keysSymbol) && !b.endsWith(keysSymbol)) {
+        if (order === SortOrder.ASC) {
+          return a.localeCompare(b, 'en')
+        }
         return b.localeCompare(a, 'en')
       }
 
-      return 0
+      // For leaf nodes, sort by the selected field
+      const nodeA = treeLevel[a]
+      const nodeB = treeLevel[b]
+
+      let comparison = 0
+
+      if (field === KeySortField.Name) {
+        comparison = a.localeCompare(b, 'en')
+      } else if (field === KeySortField.TTL) {
+        const ttlA = nodeA?.ttl ?? -1
+        const ttlB = nodeB?.ttl ?? -1
+        comparison = ttlA - ttlB
+      } else if (field === KeySortField.Size) {
+        const sizeA = nodeA?.size ?? 0
+        const sizeB = nodeB?.size ?? 0
+        comparison = sizeA - sizeB
+      }
+
+      return order === SortOrder.ASC ? comparison : -comparison
     })
   }
 
@@ -86,7 +111,7 @@ export const constructKeysToTree = (props: Props): any[] => {
   ) => {
     const treeNodes: string[] = Object.keys(tree)
 
-    sortKeysAndFolder(treeNodes)
+    sortKeysAndFolder(treeNodes, tree)
 
     return treeNodes.map((key, index) => {
       const name = key?.toString()

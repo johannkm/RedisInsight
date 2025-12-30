@@ -9,6 +9,8 @@ import {
   DEFAULT_DELIMITER,
   DEFAULT_TREE_SORTING,
   SortOrder,
+  KeySortField,
+  KeySortOption,
 } from 'uiSrc/constants'
 import {
   appContextDbConfig,
@@ -47,14 +49,29 @@ const TreeViewSettingsButton = styled(IconButton)<{
 export interface Props {
   loading: boolean
 }
-const sortOptions = [SortOrder.ASC, SortOrder.DESC].map((value) => ({
-  value,
-  inputDisplay: (
-    <span data-testid={`tree-view-sorting-item-${value}`}>
-      Key name {value}
-    </span>
-  ),
-}))
+const SORT_FIELD_LABELS: Record<KeySortField, string> = {
+  [KeySortField.Name]: 'Key name',
+  [KeySortField.TTL]: 'TTL',
+  [KeySortField.Size]: 'Size',
+}
+
+const sortOptions: { value: KeySortOption; inputDisplay: JSX.Element }[] = []
+
+Object.values(KeySortField).forEach((field) => {
+  Object.values(SortOrder).forEach((order) => {
+    sortOptions.push({
+      value: { field, order },
+      inputDisplay: (
+        <span data-testid={`tree-view-sorting-item-${field}-${order}`}>
+          {SORT_FIELD_LABELS[field]} {order}
+        </span>
+      ),
+    })
+  })
+})
+
+const sortOptionsAreEqual = (a: KeySortOption, b: KeySortOption): boolean =>
+  a.field === b.field && a.order === b.order
 
 const KeyTreeSettings = ({ loading }: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
@@ -62,7 +79,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
     treeViewDelimiter = [DEFAULT_DELIMITER],
     treeViewSort = DEFAULT_TREE_SORTING,
   } = useSelector(appContextDbConfig)
-  const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
+  const [sorting, setSorting] = useState<KeySortOption>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
   const [pendingInput, setPendingInput] = useState('')
@@ -130,7 +147,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
       dispatch(resetBrowserTree())
     }
 
-    if (sorting !== treeViewSort) {
+    if (!sortOptionsAreEqual(sorting, treeViewSort)) {
       dispatch(setBrowserTreeSort(sorting))
 
       sendEventTelemetry({
@@ -147,7 +164,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
     setIsPopoverOpen(false)
   }
 
-  const onChangeSort = (value: SortOrder) => {
+  const onChangeSort = (value: KeySortOption) => {
     setSorting(value)
   }
 
@@ -178,9 +195,10 @@ const KeyTreeSettings = ({ loading }: Props) => {
           <FormField layout="horizontal" label="Sort by">
             <RiSelect
               options={sortOptions}
-              valueRender={({ option }) => option.inputDisplay ?? option.value}
+              valueRender={({ option }) => option.inputDisplay ?? `${option.value.field} ${option.value.order}`}
               value={sorting}
-              onChange={(value: SortOrder) => onChangeSort(value)}
+              valueComparator={(a: KeySortOption, b: KeySortOption) => sortOptionsAreEqual(a, b)}
+              onChange={(value: KeySortOption) => onChangeSort(value)}
               data-testid="tree-view-sorting-select"
             />
           </FormField>

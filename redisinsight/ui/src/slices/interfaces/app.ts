@@ -8,7 +8,7 @@ import {
   DurationUnits,
   FeatureFlags,
   ICommands,
-  SortOrder,
+  KeySortOption,
 } from 'uiSrc/constants'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { GetServerInfoResponse } from 'apiSrc/modules/server/dto/server.dto'
@@ -82,7 +82,7 @@ export interface StateAppContext {
   lastPage: string
   dbConfig: {
     treeViewDelimiter: EuiComboBoxOptionOption[]
-    treeViewSort: SortOrder
+    treeViewSort: KeySortOption
     slowLogDurationUnit: DurationUnits
     showHiddenRecommendations: boolean
     shownColumns: BrowserColumns[]
@@ -154,7 +154,7 @@ export interface DatabaseSettingsData {
   [BrowserStorageItem.treeViewDelimiter]?: {
     label: string
   }[]
-  [BrowserStorageItem.treeViewSort]?: SortOrder
+  [BrowserStorageItem.treeViewSort]?: KeySortOption
   [BrowserStorageItem.showHiddenRecommendations]?: boolean
 
   [key: string]: any

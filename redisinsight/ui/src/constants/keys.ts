@@ -116,6 +116,17 @@ export enum SortOrder {
   DESC = 'DESC',
 }
 
+export enum KeySortField {
+  Name = 'name',
+  TTL = 'ttl',
+  Size = 'size',
+}
+
+export interface KeySortOption {
+  field: KeySortField
+  order: SortOrder
+}
+
 export interface LengthNamingByType {
   [key: string]: string
 }
