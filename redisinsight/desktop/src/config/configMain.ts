@@ -21,7 +21,7 @@ config.isEnterprise = config.appType === 'ELECTRON_ENTERPRISE'
 config.getApiPort = () => process.env.RI_APP_PORT || configInit.defaultPort
 config.tcpLocalAuthPort = process.env.TCP_LOCAL_AUTH_PORT
   ? parseInt(process.env.TCP_LOCAL_AUTH_PORT, 10)
-  : 5541
+  : 52853
 
 config.icon = getAssetPath('icon.png')
 

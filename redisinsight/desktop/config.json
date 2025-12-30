@@ -1,6 +1,6 @@
 {
   "build": "release",
-  "defaultPort": 5530,
+  "defaultPort": 52852,
   "host": "localhost",
   "debug": false,
   "themeSource": "system",

@@ -24,7 +24,7 @@ const apiUrl =
 export const defaultConfig = {
   api: {
     prefix: process.env.RI_API_PREFIX ?? 'api',
-    port: intEnv('RI_APP_PORT', 5540),
+    port: intEnv('RI_APP_PORT', 52851),
     baseUrl: process.env.RI_BASE_API_URL ?? apiUrl,
     hostedBaseUrl: process.env.RI_HOSTED_API_BASE_URL ?? '',
     hostedBase: process.env.RI_HOSTED_BASE ?? '',

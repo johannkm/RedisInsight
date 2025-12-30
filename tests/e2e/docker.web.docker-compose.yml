@@ -57,7 +57,7 @@ services:
       - tmp:/tmp
       - ./test-data:/test-data
     ports:
-      - 5540:5540
+      - 52851:52851
 
 volumes:
   tmp:

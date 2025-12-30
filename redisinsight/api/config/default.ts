@@ -79,7 +79,7 @@ export default {
     version,
     env: process.env.NODE_ENV || 'development',
     host: process.env.RI_APP_HOST ?? '0.0.0.0',
-    port: parseInt(process.env.RI_APP_PORT, 10) || 5540,
+    port: parseInt(process.env.RI_APP_PORT, 10) || 52851,
     docPrefix: 'api/docs',
     globalPrefix: 'api',
     customPluginsUri,
